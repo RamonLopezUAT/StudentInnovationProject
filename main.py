@@ -1,4 +1,4 @@
-# Application Version: 11.05.2024
+# Application Version: 11.13.2024
 
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -161,6 +161,7 @@ def extract_image_metadata(file_path):
     except Exception as e:
         print(f"Error extracting image metadata: {e}")
 
+# Function that adds the explanations to the files
 def get_explanation(key):
     explanations = {
         "File Name": "Name of the file",
@@ -178,20 +179,22 @@ def get_explanation(key):
     }
     return explanations.get(key, "")
 
+# Function that exports the metadata
 def export_metadata():
     global metadata
     if metadata:
-        save_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+        save_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")]) # This allows the metadata to be saved as a .txt file
         if save_path:
-            with open(save_path, 'w') as file:
+            with open(save_path, 'w') as file: # Saves the metadata in the chosen path with "write" permissions.
                 for key, value in metadata.items():
                     file.write(f"{key}: {value}\n")
-            messagebox.showinfo("Information", "Metadata exported successfully.")
+            messagebox.showinfo("Information", "Metadata exported successfully.") # SUCCESS!
         else:
-            messagebox.showinfo("Information", "Export cancelled.")
+            messagebox.showinfo("Information", "Export cancelled.") # Something went wrong?
     else:
-        messagebox.showinfo("Information", "No metadata to export.")
+        messagebox.showinfo("Information", "No metadata to export.") # No Metadata!
 
+# Drag and drop frame gets created here
 def drop(event):
     file_path = event.data.strip('{}')
     if file_path and os.path.isfile(file_path):
@@ -201,35 +204,49 @@ def drop(event):
 
 # Sets up the green header for both the homepage and resultspage
 def create_header(frame):
-    header = tk.Label(frame, text="Meta Insight", bg="green", fg="white", font=("Arial", 16), height=2)
-    header.pack(side="top", fill="x")  # Fill the width of the frame
+    header = tk.Label(frame, text="Meta Insight", bg="green", fg="white", font=("Arial", 16), width=100, height=1)
+    header.pack(side="top", fill="x", anchor="n")  # Fill the width of the frame
     return header
 
 # Set up main Tkinter window with TkinterDnD
 root = TkinterDnD.Tk()
-root.title("MetaInsight: An Educational Metadata Extraction Tool | Build: 11.05.2024")
+root.title("MetaInsight: An Educational Metadata Extraction Tool | Build: 11.13.2024")
 SCREENWIDTH = root.winfo_screenwidth()
 SCREENHEIGHT = root.winfo_screenheight()
 root.geometry(f"{SCREENWIDTH}x{SCREENHEIGHT}")
+
+'''This section creates and maintains the homepage, anything that needs to go into the homepage goes here'''
 homepage_frame = tk.Frame(root)
+
+# Creates the header bar in the Resultpage
 homepage_frame.pack()
+homepage_header = create_header(homepage_frame) # Add the header to the homepage frame
 
 # Drop target for drag and drop
 drop_target = tk.Label(homepage_frame, text="Drag and Drop Files Here", width=95, height=20, bg="lightblue")
-drop_target.pack(pady=20)
+drop_target.pack(pady=50)
 root.drop_target_register(DND_FILES)
 root.dnd_bind('<<Drop>>', drop)
 selected_file_label = tk.Label(homepage_frame, text="", font=("Arial", 12))
 selected_file_label.pack()
 open_button = tk.Button(homepage_frame, text="Open File Explorer", command=open_file_explorer)
 open_button.pack()
+
+'''This section creates and maintains the resultspage, anything that needs to go into the resultspage goes here'''
 resultspage_frame = tk.Frame(root)
+
+# Creates the header bar in the Resultpage
+results_header = create_header(resultspage_frame) # Add the header to the resultspage frame
 status_label = tk.Label(resultspage_frame, text="", font=("Arial", 10), fg="green")
 status_label.pack(pady=5)  # Add some padding
+
+# Creates the preview page for Images
 preview_frame = tk.Frame(resultspage_frame, width=SCREENWIDTH, height=300, bg="lightgray")
 preview_frame.pack()
 preview_label = tk.Label(preview_frame)
 preview_label.pack(padx=10, pady=10)
+
+# Creates the frame where metadata is shown.
 metadata_frame = tk.Frame(resultspage_frame)
 metadata_frame.pack()
 metadata_width = 55
@@ -237,22 +254,29 @@ metadata_height = 10
 metadata_label = tk.Label(resultspage_frame, font=("Arial", 8))
 metadata_label.pack()
 
-# Add the header to the homepage frame
-homepage_header = create_header(homepage_frame)
-
-# Add the header to the results page frame
-results_header = create_header(resultspage_frame)
+# Creates a frame to store the options users have to do.
+button_frame = tk.Frame(resultspage_frame)
+button_frame.pack(pady=10)  # Add padding for spacing and center alignment
+button_frame.pack(anchor="center") # Centers the frame to the middle
 
 # Checkbox to toggle visibility of empty metadata
 show_empty_metadata = tk.BooleanVar()
 show_empty_metadata.set(True)  # By default, show all metadata
-toggle_empty_metadata_checkbox = tk.Checkbutton(resultspage_frame, text="Show Empty Metadata", variable=show_empty_metadata, command=lambda: display_metadata(selected_file_label.cget("text")))
+
+# Section to show the empty Metadata box
+toggle_empty_metadata_checkbox = tk.Checkbutton(button_frame, text="Show Empty Metadata", variable=show_empty_metadata, command=lambda: display_metadata(selected_file_label.cget("text")))
 toggle_empty_metadata_checkbox.pack(side=tk.LEFT, padx=5, pady=5)
-back_button = tk.Button(resultspage_frame, text="Open Another File", width=13, command=switch_to_homepage)
+
+# This creates the button for the "Open Another File".
+back_button = tk.Button(button_frame, text="Open Another File", width=13, command=switch_to_homepage)
 back_button.pack(side=tk.LEFT, padx=5, pady=5)
-remove_metadata_button = tk.Button(resultspage_frame, text="Remove Metadata", width=13, command=lambda: remove_metadata(selected_file_label.cget("text")))
+
+# This creates the button for the "Remove Metadata".
+remove_metadata_button = tk.Button(button_frame, text="Remove Metadata", width=13, command=lambda: remove_metadata(selected_file_label.cget("text")))
 remove_metadata_button.pack(side=tk.LEFT, padx=5, pady=5)
-export_metadata_button = tk.Button(resultspage_frame, text="Export Metadata", width=13, command=export_metadata)
+
+# This creates the button for the "Export Metadata".
+export_metadata_button = tk.Button(button_frame, text="Export Metadata", width=13, command=export_metadata)
 export_metadata_button.pack(side=tk.LEFT, padx=5, pady=5)
 
 root.mainloop()
