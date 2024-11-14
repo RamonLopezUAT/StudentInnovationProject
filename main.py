@@ -39,46 +39,38 @@ def remove_metadata(file_path):
 
 # Function to remove image metadata (EXIF)
 def remove_image_metadata(file_path):
-    try:
+    try: # Notify the user that the process is starting
+        messagebox.showinfo("Removing Metadata", "Starting metadata removal...")
         image = Image.open(file_path)
         
-        # Manually check if EXIF exists using piexif
+        # Check for EXIF metadata
         if 'exif' in image.info:
-            print("EXIF metadata found in the image.")
-
-            # Load EXIF metadata
             exif_data = image.info['exif']
             exif_dict = piexif.load(exif_data)
-            if exif_dict:
-                print("Clearing EXIF metadata...")
-                # Clear the EXIF dictionary
+            if exif_dict: # Clear the EXIF dictionary
                 exif_dict.clear()
-
-                # Create empty EXIF bytes after clearing
                 exif_bytes = piexif.dump(exif_dict)
-
+                
                 # Save the image without EXIF metadata
                 output_path = file_path.replace(".", "_without_metadata.")
                 image.save(output_path, exif=exif_bytes)
-                print(f"Metadata removed. Image saved at: {output_path}")
+
+                # Notify the user of successful removal
+                messagebox.showinfo("Success", f"Metadata removed successfully! File saved as {output_path}")
+            else: # Notify the user that no metadata was found
+                messagebox.showinfo("No Metadata", "No EXIF metadata found in the image.")
+        else: # Final check using piexif in case PIL missed the EXIF tag
+            exif_dict = piexif.load(file_path)
+            if exif_dict:
+                exif_dict.clear()
+                exif_bytes = piexif.dump(exif_dict)
+                output_path = file_path.replace(".", "_no_metadata.")
+                image.save(output_path, exif=exif_bytes)
+                messagebox.showinfo("Success", f"Metadata removed successfully! File saved as {output_path}")
             else:
-                print("No EXIF metadata found in the image.")
-        else: # Second check using piexif in case PIL missed the EXIF tag
-            try:
-                exif_dict = piexif.load(file_path)  # load directly from file
-                if exif_dict:
-                    print("EXIF metadata found by piexif. Removing it...")
-                    exif_dict.clear()
-                    exif_bytes = piexif.dump(exif_dict)
-                    output_path = file_path.replace(".", "_no_metadata.")
-                    image.save(output_path, exif=exif_bytes)
-                    print(f"Metadata removed. Image saved at: {output_path}")
-                else:
-                    print("No EXIF metadata found in the image (piexif check).")
-            except Exception as piexif_error:
-                print(f"Error loading EXIF using piexif: {piexif_error}")
+                messagebox.showinfo("No Metadata", "No EXIF metadata found in the image.")
     except Exception as e:
-        print(f"Error processing the image: {e}")
+        messagebox.showerror("Error", f"Error removing metadata: {e}")
 
 # Switch to the different pages
 def switch_to_resultspage(file_path):
