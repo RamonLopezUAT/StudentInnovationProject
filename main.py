@@ -1,9 +1,9 @@
-# Application Version: 11.13.2024
+# Application Version: 11.18.2024
 
 import tkinter as tk
-from tkinter import filedialog, messagebox
+import os, datetime, shutil, piexif, ctypes
+from tkinter import filedialog, messagebox, PhotoImage
 from PIL import Image, ImageTk
-import os, datetime, shutil, piexif
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
 # Global variable to store metadata
@@ -210,7 +210,15 @@ def create_header(frame):
 
 # Set up main Tkinter window with TkinterDnD
 root = TkinterDnD.Tk()
-root.title("MetaInsight: An Educational Metadata Extraction Tool | Build: 11.13.2024")
+
+# Sets up the logo on both the window and taskbar
+logo_path = "Meta_Insight(Short_Logo).ico"  # Replace with the actual path to your logo file
+if os.name == 'nt': # This will looks to see if you have the Windows operating system
+    myappid = 'Student Innovation Project.Meta Insight.11.18.2024' # This prevent the program to open its default logo.
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    root.iconbitmap(logo_path)  # Replace the tkinter default logo
+
+root.title("MetaInsight: An Educational Metadata Extraction Tool | Build: 11.18.2024")
 SCREENWIDTH = root.winfo_screenwidth()
 SCREENHEIGHT = root.winfo_screenheight()
 root.geometry(f"{SCREENWIDTH}x{SCREENHEIGHT}")

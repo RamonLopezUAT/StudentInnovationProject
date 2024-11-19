@@ -1,5 +1,5 @@
 # Meta Insight  
-**Version**: 11.13.2024
+**Version**: 11.18.2024
 Created By: Ramon Lopez Jr
 ---
 ### Project Description
@@ -34,3 +34,7 @@ Meta Insight was developed to address the growing need for privacy awareness and
 3. **View Metadata**: Once uploaded, the file’s metadata will be displayed, with explanations for each category.
 4. **Export Metadata (Optional)**: Use the export option to save the metadata to a text file for easy reference.
 5. **Create Metadata-Free Copy (Optional)**: Use the “Wipe Metadata” button to create a copy of the file with metadata removed, helping enhance privacy.
+
+### Versions:
+1. **Version 11.13.2024:** Moved the header bar from the middle of the screen to the top.
+2. **Version 11.18.2024:** Inserted the logo of Meta Insight into the window and taskbar. Created the versions history to see Meta Insight's devlopment history.
