@@ -1,8 +1,8 @@
-# Application Version: 11.18.2024
+# Application Version: 11.20.2024
 
 import tkinter as tk
 import os, datetime, shutil, piexif, ctypes
-from tkinter import filedialog, messagebox, PhotoImage
+from tkinter import Tk, filedialog, messagebox, PhotoImage, Label, Frame
 from PIL import Image, ImageTk
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
@@ -194,13 +194,23 @@ def export_metadata():
     else:
         messagebox.showinfo("Information", "No metadata to export.") # No Metadata!
 
-# Drag and drop frame gets created here
+# Function to handle file drop
 def drop(event):
-    file_path = event.data.strip('{}')
-    if file_path and os.path.isfile(file_path):
+    try:
+        file_path = event.data.strip().replace('{', '').replace('}', '')
+        print(f"Cleaned file path: {file_path}") ## DEBUG
+        print(f"Received file path: {file_path}") ## DEBUG
+        if not os.path.exists(file_path): # Check if file exists
+            print(f"File does not exist: {file_path}") ## DEBUG
+            return
+        valid_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.gif'] # Validate file extension
+        if not any(file_path.lower().endswith(ext) for ext in valid_extensions):
+            print("Invalid file dropped") ## DEBUG
+            return
+        print(f"Valid file: {file_path}") # Process valid file ## DEBUG
         switch_to_resultspage(file_path)
-    else:
-        messagebox.showinfo("Information", "No valid file dropped")
+    except Exception as e:
+        print(f"Error in drop handler: {e}")
 
 # Sets up the green header for both the homepage and resultspage
 def create_header(frame):
@@ -214,11 +224,11 @@ root = TkinterDnD.Tk()
 # Sets up the logo on both the window and taskbar
 logo_path = "Meta_Insight(Short_Logo).ico"  # Replace with the actual path to your logo file
 if os.name == 'nt': # This will looks to see if you have the Windows operating system
-    myappid = 'Student Innovation Project.Meta Insight.11.18.2024' # This prevent the program to open its default logo.
+    myappid = 'Student Innovation Project.Meta Insight.11.20.2024' # This prevent the program to open its default logo.
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
     root.iconbitmap(logo_path)  # Replace the tkinter default logo
 
-root.title("MetaInsight: An Educational Metadata Extraction Tool | Build: 11.18.2024")
+root.title("MetaInsight: An Educational Metadata Extraction Tool | Build: 11.20.2024")
 SCREENWIDTH = root.winfo_screenwidth()
 SCREENHEIGHT = root.winfo_screenheight()
 root.geometry(f"{SCREENWIDTH}x{SCREENHEIGHT}")

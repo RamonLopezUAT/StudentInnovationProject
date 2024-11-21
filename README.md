@@ -1,5 +1,5 @@
 # Meta Insight  
-**Version**: 11.18.2024
+**Version**: 11.20.2024
 Created By: Ramon Lopez Jr
 ---
 ### Project Description
@@ -38,3 +38,4 @@ Meta Insight was developed to address the growing need for privacy awareness and
 ### Versions:
 1. **Version 11.13.2024:** Moved the header bar from the middle of the screen to the top.
 2. **Version 11.18.2024:** Inserted the logo of Meta Insight into the window and taskbar. Created the versions history to see Meta Insight's devlopment history.
+3. **Version 11.20.2024:** Implemented and fixed the drag-and-drop box. User can now open their file explorers and drop the file into this.
